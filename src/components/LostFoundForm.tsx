@@ -11,7 +11,6 @@ import { useState } from 'react';
 import { uploadImageToSupabase } from '@/lib/uploadImageToSupabase';
 import { X } from 'lucide-react'
 import { deleteImageFromSupabase } from '@/lib/deleteImageFromSupabase';
-import { addItem } from '@/lib/db/queries';
 import toast from 'react-hot-toast';
 
 const formSchema = z.object({
@@ -45,18 +44,34 @@ export const LostFoundForm = ({ heading, type, redirectAfterSubmit = '/' }: Prop
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const addNewItem = await addItem({...values, type})
-      if (addNewItem) {
-        toast.success('Объявление добавлено!')
-        router.push(redirectAfterSubmit)
-      } else {
-        toast.error('Произошла ошибка при добавлении объявления')
+      const response = await fetch('/api/items', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...values, type }),
+      })
+
+      if (!response.ok) {
+        toast.error('Произошла ошибка при отправке')
+        return
       }
+
+      toast.success('Добавлено')
+
+      form.reset({
+        title: "",
+        city: "",
+        description: "",
+        imageUrl: "",
+      })
+      setUploadedImage(null);
+
+      router.push('/')
     } catch (error) {
       console.log(error)
       toast.error('Произошла ошибка при отправке')
     }
-    router.push('/')
   }
 
   const onReset = () => {
@@ -67,6 +82,7 @@ export const LostFoundForm = ({ heading, type, redirectAfterSubmit = '/' }: Prop
       imageUrl: "",
     })
     setUploadedImage(null);
+    
     router.push('/')
   }
 
