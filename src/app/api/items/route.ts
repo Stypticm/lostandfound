@@ -1,4 +1,4 @@
-import { addItem } from '@/lib/db/queries'
+import { addItem, getLostItems } from '@/lib/db/queries'
 import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {

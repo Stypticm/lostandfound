@@ -5,5 +5,5 @@ export interface Item {
   city: string
   description: string
   imageUrl?: string
-  createdAt?: Date
+  createdAt?: string
 }
