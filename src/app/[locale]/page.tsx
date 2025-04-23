@@ -2,19 +2,13 @@ import MainTable from '@/components/MainTable';
 import SearchComponent from '@/components/SearchComponent';
 import { Button } from '@/components/ui/Button';
 import { Locale, useTranslations } from 'next-intl';
-import { setRequestLocale } from 'next-intl/server';
 import Link from 'next/link';
-import { use } from 'react';
 
 type Props = {
   params: Promise<{ locale: Locale }>;
 };
 
-export default async function Home({ params }: Props) {
-  const { locale } = use(params);
-
-  setRequestLocale(locale);
-
+export default function Home({ params }: Props) {
   const t = useTranslations();
 
   return (

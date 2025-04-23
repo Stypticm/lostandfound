@@ -1,44 +1,32 @@
 'use client'
 
+import { useLocale } from 'next-intl'
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+
 
 const LanguageToggle = () => {
-  const [locale, setLocale] = useState<string>("")
+  const locale = useLocale()
   const router = useRouter()
-  const currentLanguage = usePathname().split('/')[1]
+  const currentPath = usePathname()
 
-  useEffect(() => {
-    const cookieLocale = document.cookie
-      .split(';')
-      .find((row) => row.startsWith('MYNEXTAPP_LOCALE='))
-      ?.split('=')[1]
-    if (cookieLocale) {
-      setLocale(cookieLocale)
-    } else {
-      const browserLocale = navigator.language.slice(0, 2)
-      setLocale(browserLocale)
-      document.cookie = `MYNEXTAPP_LOCALE=${browserLocale};`;
-      router.refresh()
-    }
-  }, [router])
-
-  const handleLanguageChange = (locale: string) => {
-    document.cookie = `MYNEXTAPP_LOCALE=${locale};`;
+  // Функция для изменения языка
+  const handleLanguageChange = (newLocale: string) => {
+    const newPath = currentPath.replace(`/${locale}`, `/${newLocale}`)
+    router.push(newPath)
     router.refresh()
   }
 
   return (
     <ul className='flex gap-2'>
       <li
-        onClick={() => handleLanguageChange('en')}
-        className={`cursor-pointer ${currentLanguage === 'ru' ? 'font-bold underline' : ''}`}
+        onClick={() => handleLanguageChange('ru')}
+        className={`cursor-pointer ${locale === 'ru' ? 'font-bold' : 'underline'}`}
       >
         Ru
       </li>
       <li
-        onClick={() => handleLanguageChange('ru')}
-        className={`cursor-pointer ${currentLanguage === 'en' ? 'font-bold underline' : ''}`}
+        onClick={() => handleLanguageChange('en')}
+        className={`cursor-pointer ${locale === 'en' ? 'font-bold' : 'underline'}`}
       >
         En
       </li>

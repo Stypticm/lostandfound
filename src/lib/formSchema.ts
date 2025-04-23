@@ -15,11 +15,11 @@ export const formSchema = (dict: Dict) =>
   baseFormSchema.extend({
     title: z
       .string()
-      .min(4, { message: dict.messageFormTitle }),
+      .min(4, { message: dict['messageFormTitl'] }),
     city: z
       .string()
-      .min(5, { message: dict.messageFormCity }),
+      .min(5, { message: dict['messageFormCity'] }),
     description: z
       .string()
-      .min(10, { message: dict.messageFormDesc }),
+      .min(10, { message: dict['messageFormDesc'] }),
   })

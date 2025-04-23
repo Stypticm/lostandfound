@@ -13,6 +13,7 @@ import { X } from 'lucide-react'
 import { deleteImageFromSupabase } from '@/lib/deleteImageFromSupabase';
 import toast from 'react-hot-toast';
 import { formSchema, FormValues } from '@/lib/formSchema';
+import { useFormMessages } from '@/lib/hook/useFormMessages';
 
 type Props = {
   type: "lost" | "found"
@@ -31,7 +32,7 @@ export const LostFoundForm = ({
   onSubmitOverride,
   redirectAfterSubmit = '/'
 }: Props) => {
-  const dict = useDict()
+  const dict = useFormMessages();
   const schema = formSchema(dict)
   const router = useRouter()
   const [uploading, setUploading] = useState(false)
@@ -118,7 +119,7 @@ export const LostFoundForm = ({
   };
 
   return (
-    <section className='flex flex-col'>
+    <section className='flex flex-col p-4'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
