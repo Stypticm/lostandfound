@@ -7,90 +7,88 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { uploadImageToSupabase } from '@/lib/uploadImageToSupabase';
 import { X } from 'lucide-react'
 import { deleteImageFromSupabase } from '@/lib/deleteImageFromSupabase';
 import toast from 'react-hot-toast';
-
-const formSchema = z.object({
-  title: z.string().min(4, { message: "Название должно содержать не менее 4 символов" }),
-  city: z.string().min(5, { message: "Название города должно содержать не менее 5 символов" }),
-  description: z.string().min(10, { message: "Описание должно содержать не менее 10 символов" }),
-  imageUrl: z.string().url().optional(),
-})
+import { formSchema, FormValues } from '@/lib/formSchema';
 
 type Props = {
-  heading: string
   type: "lost" | "found"
+  heading: string
+  initialValues?: Partial<FormValues>
+  itemId?: number
+  onSubmitOverride?: (values: FormValues) => Promise<void>
   redirectAfterSubmit?: string
 }
 
-export const LostFoundForm = ({ heading, type, redirectAfterSubmit = '/' }: Props) => {
-
+export const LostFoundForm = ({
+  type,
+  heading,
+  initialValues,
+  itemId,
+  onSubmitOverride,
+  redirectAfterSubmit = '/'
+}: Props) => {
+  const dict = useDict()
+  const schema = formSchema(dict)
   const router = useRouter()
   const [uploading, setUploading] = useState(false)
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
     defaultValues: {
-      title: "",
-      city: "",
-      description: "",
-      imageUrl: "",
+      title: initialValues?.title || "",
+      city: initialValues?.city || "",
+      description: initialValues?.description || "",
+      imageUrl: initialValues?.imageUrl || "",
     },
   })
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      const response = await fetch('/api/items', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ...values, type }),
-      })
+  useEffect(() => {
+    if (initialValues?.imageUrl) {
+      setUploadedImage(initialValues.imageUrl)
+    }
+  }, [initialValues?.imageUrl])
 
-      if (!response.ok) {
-        toast.error('Произошла ошибка при отправке')
-        return
+  const onSubmit = async (values: FormValues) => {
+    try {
+      if (onSubmitOverride) {
+        await onSubmitOverride(values)
+      } else {
+        const response = await fetch(itemId ? '/api/items/${itemId}' : '/api/items', {
+          method: itemId ? 'PATCH' : 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ...values, type }),
+        })
+
+        if (!response.ok) {
+          toast.error(`${dict.messageFormError}`)
+          return
+        }
       }
 
-      toast.success('Добавлено')
-
-      form.reset({
-        title: "",
-        city: "",
-        description: "",
-        imageUrl: "",
-      })
-      setUploadedImage(null);
-
-      router.push('/')
+      toast.success(itemId ? `${dict.itemUpdated}` : `${dict.itemAdded}`)
+      router.push(redirectAfterSubmit)
     } catch (error) {
       console.log(error)
-      toast.error('Произошла ошибка при отправке')
+      toast.error(`${dict.messageFormError}`)
     }
   }
 
   const onReset = () => {
-    form.reset({
-      title: "",
-      city: "",
-      description: "",
-      imageUrl: "",
-    })
-    setUploadedImage(null);
-    
-    router.push('/')
+    form.reset()
+    setUploadedImage(initialValues?.imageUrl || null);
+    router.push(redirectAfterSubmit)
   }
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (uploadedImage) return;
+    if (!file || uploadedImage) return;
 
     setUploading(true);
     try {
@@ -98,7 +96,7 @@ export const LostFoundForm = ({ heading, type, redirectAfterSubmit = '/' }: Prop
       form.setValue("imageUrl", url);
       setUploadedImage(url);
     } catch (error) {
-      console.error("Ошибка при загрузке:", error);
+      console.error(`${dict.messageFormDownloadError}:`, error);
     } finally {
       setUploading(false);
       e.target.value = "";
@@ -115,13 +113,12 @@ export const LostFoundForm = ({ heading, type, redirectAfterSubmit = '/' }: Prop
       form.setValue("imageUrl", "");
       setUploadedImage(null);
     } else {
-      console.error("Ошибка при удалении изображения:", result.error);
+      console.error(`${dict.messageFormDeleteError}:`, result.error);
     }
   };
 
   return (
-    <section>
-      <h2 className='text-2xl font-bold text-center pb-10'>{heading}</h2>
+    <section className='flex flex-col'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
@@ -130,7 +127,7 @@ export const LostFoundForm = ({ heading, type, redirectAfterSubmit = '/' }: Prop
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input className="text-2xl py-8 bg-zinc-900 text-zinc-50" placeholder="Название" {...field} />
+                  <Input className="text-2xl py-8 bg-zinc-900 text-zinc-50" placeholder={dict.nameOfTable} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -142,7 +139,7 @@ export const LostFoundForm = ({ heading, type, redirectAfterSubmit = '/' }: Prop
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input className="text-2xl py-8 bg-zinc-900" placeholder="Город" {...field} />
+                  <Input className="text-2xl py-8 bg-zinc-900" placeholder={dict.city} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -154,7 +151,7 @@ export const LostFoundForm = ({ heading, type, redirectAfterSubmit = '/' }: Prop
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input className="text-2xl py-8 bg-zinc-900" placeholder="Описание" {...field} />
+                  <Input className="text-2xl py-8 bg-zinc-900" placeholder={dict.descriptionOfForm} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -170,7 +167,7 @@ export const LostFoundForm = ({ heading, type, redirectAfterSubmit = '/' }: Prop
                     <section className="space-y-4 flex flex-col justify-center items-center relative p-4">
                       <img
                         src={uploadedImage}
-                        alt="Загруженное изображение"
+                        alt={dict.uploadedImage}
                         className="max-h-36 rounded-xl border border-zinc-700"
                       />
                       <X className='absolute top-1 right-2 text-red-600 cursor-pointer' onClick={deleteImage} />
@@ -189,12 +186,14 @@ export const LostFoundForm = ({ heading, type, redirectAfterSubmit = '/' }: Prop
             )}
           />
           <footer className='flex gap-2 justify-around items-center'>
-            <Button type="submit" className=' text-2xl p-10' disabled={uploading}>
+            <Button type="submit" className=' text-2xl p-8' disabled={uploading}>
               {
-                uploading ? "Загрузка..." : "Отправить"
+                uploading ? `${dict.loading}` : itemId ? `${dict.save}` : `${dict.send}`
               }
             </Button>
-            <Button type="button" onClick={onReset} className=' text-2xl p-10'>Отмена</Button>
+            <Button type="button" onClick={onReset} className=' text-2xl p-8'>
+              {`${dict.reset}`}
+            </Button>
           </footer>
         </form>
       </Form>

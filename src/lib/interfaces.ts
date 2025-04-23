@@ -4,6 +4,7 @@ export interface Item {
   type: 'lost' | 'found'
   city: string
   description: string
-  imageUrl?: string
-  createdAt?: string
+  imageUrl?: string | null
+  createdAt?: string | undefined
+  telegramId?: string | null
 }

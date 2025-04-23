@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "/src/lib/generated/prisma"
+  output = "../src/lib/db/generated"
 }
 
 datasource db {
@@ -16,5 +16,6 @@ model Item {
   city        String
   description String
   imageUrl    String?
+  telegramId  String?
   createdAt   DateTime @default(now())
 }

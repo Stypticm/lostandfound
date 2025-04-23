@@ -29,6 +29,8 @@ export const getLostItems = async () => {
         createdAt: true,
       },
     })
+    if (!data) return
+
     return data.map((item) => ({
       ...item,
       createdAt: new Date(
@@ -51,6 +53,8 @@ export const getFoundItems = async () => {
         createdAt: true,
       },
     })
+    if (!data) return
+
     return data.map((item) => ({
       ...item,
       createdAt: new Date(
@@ -78,14 +82,25 @@ export const deleteItem = async (
   }
 }
 
-export const getItemById = async (id: number) => {
+export const getItemById = async (
+  id: number
+): Promise<Item | null> => {
   try {
-    const data = await prisma.item.findUnique({
+    const item = await prisma.item.findUnique({
       where: { id },
     })
-    return data
+    if (!item) return null
+
+    const formattedItem: Item = {
+      ...item,
+      type: item.type as 'lost' | 'found',
+      createdAt: item.createdAt.toISOString(),
+    }
+
+    return formattedItem
   } catch (error) {
     console.error(error)
+    return null
   }
 }
 
