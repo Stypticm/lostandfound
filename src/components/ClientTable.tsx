@@ -14,7 +14,7 @@ interface ClientTableProps {
   lostItems: Item[];
 }
 
-const ClientTable = ({ foundItems, lostItems }: ClientTableProps) => {
+const ClientTable = ({ foundItems = [], lostItems = [] }: ClientTableProps) => {
   const t = useTranslations();
   const { searchQuery } = useSearch();
   const debouncedSearch = useDebounce(searchQuery, 300);
@@ -38,26 +38,35 @@ const ClientTable = ({ foundItems, lostItems }: ClientTableProps) => {
         </>
       ) : (
         <>
-          <section className="flex flex-col">
-            <h2 className="text-2xl font-bold text-center">
-              {t('recentlyFound')} — <br />
-              <Link href="/found" className="underline text-primary">
-                {t('seeAll')}
-              </Link>
-            </h2>
-            <TableFoundItems foundItems={foundItems} count={3} />
-            <p className="text-center text-sm text-muted-foreground">{t('descForTable')}</p>
-          </section>
-          <section>
-            <h2 className="text-2xl font-bold text-center">
-              {t('recentlyLost')} — <br />
-              <Link href="/lost" className="underline text-primary">
-                {t('seeAll')}
-              </Link>
-            </h2>
-            <TableLostItems lostItems={lostItems} count={3} />
-            <p className="text-center text-sm text-muted-foreground">{t('descForTable')}</p>
-          </section>
+          {foundItems.length > 0 && (
+            <section className="flex flex-col">
+              <h2 className="text-2xl font-bold text-center">
+                {t('recentlyFound')} — <br />
+                <Link href="/found" className="underline text-primary">
+                  {t('seeAll')}
+                </Link>
+              </h2>
+              <TableFoundItems foundItems={foundItems} count={3} />
+              <p className="text-center text-sm text-muted-foreground">{t('descForTable')}</p>
+            </section>
+          )}
+
+          {lostItems.length > 0 && (
+            <section>
+              <h2 className="text-2xl font-bold text-center">
+                {t('recentlyLost')} — <br />
+                <Link href="/lost" className="underline text-primary">
+                  {t('seeAll')}
+                </Link>
+              </h2>
+              <TableLostItems lostItems={lostItems} count={3} />
+              <p className="text-center text-sm text-muted-foreground">{t('descForTable')}</p>
+            </section>
+          )}
+
+          {foundItems.length === 0 && lostItems.length === 0 && (
+            <p className="text-center text-muted-foreground">{t('nothingFound')}</p>
+          )}
         </>
       )}
     </section>
