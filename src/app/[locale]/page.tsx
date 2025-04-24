@@ -1,11 +1,11 @@
 import MainTable from '@/components/MainTable';
 import SearchComponent from '@/components/SearchComponent';
 import { Button } from '@/components/ui/Button';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 
-export default function Home() {
-  const t = useTranslations();
+export default async function Home() {
+  const t = await getTranslations();
 
   return (
     <>
