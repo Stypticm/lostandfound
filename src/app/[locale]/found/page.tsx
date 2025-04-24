@@ -2,6 +2,8 @@ import TableFoundItems from '@/components/TableFoundItems';
 import { getFoundItems } from '@/lib/db/queries';
 import { getTranslations } from 'next-intl/server';
 
+export const dynamic = 'force-dynamic';
+
 const Found = async () => {
   const foundItems = await getFoundItems();
   const t = await getTranslations();
