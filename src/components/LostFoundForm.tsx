@@ -14,7 +14,6 @@ import { deleteImageFromSupabase } from '@/lib/deleteImageFromSupabase';
 import toast from 'react-hot-toast';
 import { formSchema, FormValues } from '@/lib/formSchema';
 import { useFormMessages } from '@/lib/hook/useFormMessages';
-import { useLocale } from 'next-intl';
 
 type Props = {
   heading: string;
@@ -36,7 +35,6 @@ export const LostFoundForm = ({
   const dict = useFormMessages();
   const schema = formSchema(dict);
   const router = useRouter();
-  const locale = useLocale();
   const [uploading, setUploading] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
 
@@ -61,16 +59,13 @@ export const LostFoundForm = ({
       if (onSubmitOverride) {
         await onSubmitOverride(values);
       } else {
-        const response = await fetch(
-          itemId ? `/api/items/${itemId}` : `/api/items`,
-          {
-            method: itemId ? 'PATCH' : 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ ...values, type }),
+        const response = await fetch(itemId ? `/api/items/${itemId}` : `/api/items`, {
+          method: itemId ? 'PATCH' : 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-        );
+          body: JSON.stringify({ ...values, type }),
+        });
 
         if (!response.ok) {
           toast.error(`${dict.messageFormError}`);
