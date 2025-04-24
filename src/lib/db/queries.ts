@@ -31,10 +31,12 @@ export const getLostItems = async () => {
     });
     if (!data) return;
 
-    return data.map((item: { createdAt: Date; id: number; title: string; city: string }) => ({
-      ...item,
-      createdAt: new Date(item.createdAt).toLocaleDateString('ru-RU'),
-    }));
+    return (data || []).map(
+      (item: { createdAt: Date; id: number; title: string; city: string }) => ({
+        ...item,
+        createdAt: new Date(item.createdAt).toLocaleDateString('ru-RU'),
+      }),
+    );
   } catch (error) {
     console.error(error);
   }
@@ -53,10 +55,12 @@ export const getFoundItems = async () => {
     });
     if (!data) return;
 
-    return data.map((item: { createdAt: Date; id: number; title: string; city: string }) => ({
-      ...item,
-      createdAt: new Date(item.createdAt).toLocaleDateString('ru-RU'),
-    }));
+    return (data || []).map(
+      (item: { createdAt: Date; id: number; title: string; city: string }) => ({
+        ...item,
+        createdAt: new Date(item.createdAt).toLocaleDateString('ru-RU'),
+      }),
+    );
   } catch (error) {
     console.error(error);
   }
