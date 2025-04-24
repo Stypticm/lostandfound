@@ -3,9 +3,9 @@ import { getItemById } from '@/lib/db/queries'
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: number } }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = params
+  const id = Number(params.id)
   const item = await getItemById(id)
   return NextResponse.json(item)
 }
