@@ -31,7 +31,7 @@ export const getLostItems = async () => {
     });
     if (!data) return;
 
-    return data.map((item) => ({
+    return data.map((item: { createdAt: Date; id: number; title: string; city: string }) => ({
       ...item,
       createdAt: new Date(item.createdAt).toLocaleDateString('ru-RU'),
     }));
