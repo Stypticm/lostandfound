@@ -62,7 +62,7 @@ export const LostFoundForm = ({
         await onSubmitOverride(values);
       } else {
         const response = await fetch(
-          itemId ? `/${locale}/api/items/${itemId}` : `/${locale}/api/items`,
+          itemId ? `/api/items/${itemId}` : `/api/items`,
           {
             method: itemId ? 'PATCH' : 'POST',
             headers: {
