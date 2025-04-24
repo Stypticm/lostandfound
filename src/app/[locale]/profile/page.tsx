@@ -1,6 +1,6 @@
 'use client';
 
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import WebApp from '@twa-dev/sdk';
 import { useTranslations } from 'next-intl';
 
@@ -10,7 +10,6 @@ const Profile = () => {
     id?: number;
     username?: string;
   }>({});
-
 
   useEffect(() => {
     try {
@@ -30,8 +29,12 @@ const Profile = () => {
     <div className="p-4">
       <h1 className="text-xl font-semibold mb-4">{t('myAds')}</h1>
       <div className="text-base">
-        <p><strong>Your Telegram ID:</strong> {userInfo.id}</p>
-        <p><strong>Your Username:</strong> @{userInfo.username}</p>
+        <p>
+          <strong>Your Telegram ID:</strong> {userInfo.id}
+        </p>
+        <p>
+          <strong>Your Username:</strong> @{userInfo.username}
+        </p>
       </div>
     </div>
   );

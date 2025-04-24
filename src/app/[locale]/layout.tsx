@@ -11,7 +11,6 @@ export function generateStaticParams() {
 }
 
 export default async function LocaleLayout({ children }: { children: React.ReactNode }) {
-
   return (
     <>
       <header className="p-2 flex justify-between items-center dark:border-b-2 dark:border-zinc-300 border-zinc-900 border-b-2">
