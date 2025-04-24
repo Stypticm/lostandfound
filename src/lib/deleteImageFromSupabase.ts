@@ -1,17 +1,13 @@
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase';
 
-export const deleteImageFromSupabase = async (
-  imageUrl: string
-) => {
-  const fileName = imageUrl.split('/').pop()
+export const deleteImageFromSupabase = async (imageUrl: string) => {
+  const fileName = imageUrl.split('/').pop();
 
-  const { error } = await supabase.storage
-    .from('items')
-    .remove([fileName!])
+  const { error } = await supabase.storage.from('items').remove([fileName!]);
 
   if (error) {
-    return { success: false, error: error.message }
+    return { success: false, error: error.message };
   }
 
-  return { success: true, error: null }
-}
+  return { success: true, error: null };
+};

@@ -1,7 +1,7 @@
-import { useTranslations } from 'next-intl'
+import { useTranslations } from 'next-intl';
 
 export const useFormMessages = () => {
-  const t = useTranslations()
+  const t = useTranslations();
 
   return {
     messageFormTitle: t('messageFormTitle'),
@@ -20,5 +20,5 @@ export const useFormMessages = () => {
     save: t('save'),
     send: t('send'),
     reset: t('reset'),
-  }
-}
+  };
+};

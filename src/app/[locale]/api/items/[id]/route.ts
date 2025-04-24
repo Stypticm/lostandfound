@@ -1,12 +1,9 @@
-import { NextRequest } from 'next/server'
-import { prisma } from '../../../../../../lib/prisma'
+import { NextRequest } from 'next/server';
+import { prisma } from '../../../../../../lib/prisma';
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const id = Number(params.id)
-  const data = await req.json()
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const id = Number((await params).id);
+  const data = await req.json();
 
   try {
     const updatedItem = await prisma.item.update({
@@ -18,13 +15,13 @@ export async function PATCH(
         imageUrl: data.imageUrl,
         type: data.type,
       },
-    })
+    });
 
-    return Response.json(updatedItem)
+    return Response.json(updatedItem);
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return new Response('Ошибка при обновлении', {
       status: 500,
-    })
+    });
   }
 }

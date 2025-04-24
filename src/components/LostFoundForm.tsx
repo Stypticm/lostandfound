@@ -5,59 +5,57 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Input } from '@/components/ui/Input';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { zodResolver } from "@hookform/resolvers/zod"
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { uploadImageToSupabase } from '@/lib/uploadImageToSupabase';
-import { X } from 'lucide-react'
+import { X } from 'lucide-react';
 import { deleteImageFromSupabase } from '@/lib/deleteImageFromSupabase';
 import toast from 'react-hot-toast';
 import { formSchema, FormValues } from '@/lib/formSchema';
 import { useFormMessages } from '@/lib/hook/useFormMessages';
 
 type Props = {
-  type: "lost" | "found"
-  heading: string
-  initialValues?: Partial<FormValues>
-  itemId?: number
-  onSubmitOverride?: (values: FormValues) => Promise<void>
-  redirectAfterSubmit?: string
-}
+  type: 'lost' | 'found';
+  initialValues?: Partial<FormValues>;
+  itemId?: number;
+  onSubmitOverride?: (values: FormValues) => Promise<void>;
+  redirectAfterSubmit?: string;
+};
 
 export const LostFoundForm = ({
   type,
-  heading,
   initialValues,
   itemId,
   onSubmitOverride,
-  redirectAfterSubmit = '/'
+  redirectAfterSubmit = '/',
 }: Props) => {
   const dict = useFormMessages();
-  const schema = formSchema(dict)
-  const router = useRouter()
-  const [uploading, setUploading] = useState(false)
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null)
+  const schema = formSchema(dict);
+  const router = useRouter();
+  const [uploading, setUploading] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      title: initialValues?.title || "",
-      city: initialValues?.city || "",
-      description: initialValues?.description || "",
-      imageUrl: initialValues?.imageUrl || "",
+      title: initialValues?.title || '',
+      city: initialValues?.city || '',
+      description: initialValues?.description || '',
+      imageUrl: initialValues?.imageUrl || '',
     },
-  })
+  });
 
   useEffect(() => {
     if (initialValues?.imageUrl) {
-      setUploadedImage(initialValues.imageUrl)
+      setUploadedImage(initialValues.imageUrl);
     }
-  }, [initialValues?.imageUrl])
+  }, [initialValues?.imageUrl]);
 
   const onSubmit = async (values: FormValues) => {
     try {
       if (onSubmitOverride) {
-        await onSubmitOverride(values)
+        await onSubmitOverride(values);
       } else {
         const response = await fetch(itemId ? '/api/items/${itemId}' : '/api/items', {
           method: itemId ? 'PATCH' : 'POST',
@@ -65,27 +63,27 @@ export const LostFoundForm = ({
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ ...values, type }),
-        })
+        });
 
         if (!response.ok) {
-          toast.error(`${dict.messageFormError}`)
-          return
+          toast.error(`${dict.messageFormError}`);
+          return;
         }
       }
 
-      toast.success(itemId ? `${dict.itemUpdated}` : `${dict.itemAdded}`)
-      router.push(redirectAfterSubmit)
+      toast.success(itemId ? `${dict.itemUpdated}` : `${dict.itemAdded}`);
+      router.push(redirectAfterSubmit);
     } catch (error) {
-      console.log(error)
-      toast.error(`${dict.messageFormError}`)
+      console.log(error);
+      toast.error(`${dict.messageFormError}`);
     }
-  }
+  };
 
   const onReset = () => {
-    form.reset()
+    form.reset();
     setUploadedImage(initialValues?.imageUrl || null);
-    router.push(redirectAfterSubmit)
-  }
+    router.push(redirectAfterSubmit);
+  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -94,24 +92,24 @@ export const LostFoundForm = ({
     setUploading(true);
     try {
       const url = await uploadImageToSupabase(file, type);
-      form.setValue("imageUrl", url);
+      form.setValue('imageUrl', url);
       setUploadedImage(url);
     } catch (error) {
       console.error(`${dict.messageFormDownloadError}:`, error);
     } finally {
       setUploading(false);
-      e.target.value = "";
+      e.target.value = '';
     }
   };
 
   const deleteImage = async () => {
-    const imageUrl = form.getValues("imageUrl");
+    const imageUrl = form.getValues('imageUrl');
     if (!imageUrl) return;
 
     const result = await deleteImageFromSupabase(imageUrl);
 
     if (result.success) {
-      form.setValue("imageUrl", "");
+      form.setValue('imageUrl', '');
       setUploadedImage(null);
     } else {
       console.error(`${dict.messageFormDeleteError}:`, result.error);
@@ -119,7 +117,7 @@ export const LostFoundForm = ({
   };
 
   return (
-    <section className='flex flex-col p-4'>
+    <section className="flex flex-col p-4">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
@@ -128,7 +126,11 @@ export const LostFoundForm = ({
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input className="text-2xl py-8 bg-zinc-900 text-zinc-50" placeholder={dict.nameOfTable} {...field} />
+                  <Input
+                    className="text-2xl py-8 bg-zinc-900 text-zinc-50"
+                    placeholder={dict.nameOfTable}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -152,7 +154,11 @@ export const LostFoundForm = ({
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input className="text-2xl py-8 bg-zinc-900" placeholder={dict.descriptionOfForm} {...field} />
+                  <Input
+                    className="text-2xl py-8 bg-zinc-900"
+                    placeholder={dict.descriptionOfForm}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -161,7 +167,7 @@ export const LostFoundForm = ({
           <FormField
             control={form.control}
             name="imageUrl"
-            render={({ field }) => (
+            render={() => (
               <FormItem>
                 <FormControl>
                   {uploadedImage ? (
@@ -171,7 +177,10 @@ export const LostFoundForm = ({
                         alt={dict.uploadedImage}
                         className="max-h-36 rounded-xl border border-zinc-700"
                       />
-                      <X className='absolute top-1 right-2 text-red-600 cursor-pointer' onClick={deleteImage} />
+                      <X
+                        className="absolute top-1 right-2 text-red-600 cursor-pointer"
+                        onClick={deleteImage}
+                      />
                     </section>
                   ) : (
                     <Input
@@ -186,18 +195,16 @@ export const LostFoundForm = ({
               </FormItem>
             )}
           />
-          <footer className='flex gap-2 justify-around items-center'>
-            <Button type="submit" className=' text-2xl p-8' disabled={uploading}>
-              {
-                uploading ? `${dict.loading}` : itemId ? `${dict.save}` : `${dict.send}`
-              }
+          <footer className="flex gap-2 justify-around items-center">
+            <Button type="submit" className=" text-2xl p-8" disabled={uploading}>
+              {uploading ? `${dict.loading}` : itemId ? `${dict.save}` : `${dict.send}`}
             </Button>
-            <Button type="button" onClick={onReset} className=' text-2xl p-8'>
+            <Button type="button" onClick={onReset} className=" text-2xl p-8">
               {`${dict.reset}`}
             </Button>
           </footer>
         </form>
       </Form>
     </section>
-  )
-}
+  );
+};

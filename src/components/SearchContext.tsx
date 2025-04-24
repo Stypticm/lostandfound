@@ -1,30 +1,30 @@
-'use client'
+'use client';
 
-import { createContext, PropsWithChildren, useContext, useState } from 'react'
+import { createContext, PropsWithChildren, useContext, useState } from 'react';
 
 interface SearchContextProps {
-    searchQuery: string
-    setSearchQuery: (search: string) => void
+  searchQuery: string;
+  setSearchQuery: (search: string) => void;
 }
 
-const SearchContext = createContext<SearchContextProps | undefined>(undefined)
+const SearchContext = createContext<SearchContextProps | undefined>(undefined);
 
 export const SearchProvider = ({ children }: PropsWithChildren) => {
-    const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState('');
 
-    return (
-        <SearchContext.Provider value={{ searchQuery, setSearchQuery }}>
-            {children}
-        </SearchContext.Provider>
-    )
-}
+  return (
+    <SearchContext.Provider value={{ searchQuery, setSearchQuery }}>
+      {children}
+    </SearchContext.Provider>
+  );
+};
 
 export const useSearch = () => {
-    const context = useContext(SearchContext)
+  const context = useContext(SearchContext);
 
-    if (!context) {
-        throw new Error('useSearch must be used within a SearchProvider')
-    }
+  if (!context) {
+    throw new Error('useSearch must be used within a SearchProvider');
+  }
 
-    return context
-}
+  return context;
+};

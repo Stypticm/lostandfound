@@ -1,9 +1,9 @@
-import { prisma } from '../../../lib/prisma'
-import { Item } from '../interfaces'
-import { supabase } from '../supabase'
+import { prisma } from '../../../lib/prisma';
+import { Item } from '../interfaces';
+import { supabase } from '../supabase';
 
 export const addItem = async (item: Item) => {
-  const createdAt = new Date()
+  const createdAt = new Date();
 
   try {
     const data = await prisma.item.create({
@@ -11,12 +11,12 @@ export const addItem = async (item: Item) => {
         ...item,
         createdAt,
       },
-    })
-    return data
+    });
+    return data;
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
-}
+};
 
 export const getLostItems = async () => {
   try {
@@ -28,19 +28,17 @@ export const getLostItems = async () => {
         city: true,
         createdAt: true,
       },
-    })
-    if (!data) return
+    });
+    if (!data) return;
 
     return data.map((item) => ({
       ...item,
-      createdAt: new Date(
-        item.createdAt
-      ).toLocaleDateString('ru-RU'),
-    }))
+      createdAt: new Date(item.createdAt).toLocaleDateString('ru-RU'),
+    }));
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
-}
+};
 
 export const getFoundItems = async () => {
   try {
@@ -52,57 +50,48 @@ export const getFoundItems = async () => {
         city: true,
         createdAt: true,
       },
-    })
-    if (!data) return
+    });
+    if (!data) return;
 
     return data.map((item) => ({
       ...item,
-      createdAt: new Date(
-        item.createdAt
-      ).toLocaleDateString('ru-RU'),
-    }))
+      createdAt: new Date(item.createdAt).toLocaleDateString('ru-RU'),
+    }));
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
-}
+};
 
-export const deleteItem = async (
-  id: number,
-  idStorageItem: string
-) => {
+export const deleteItem = async (id: number, idStorageItem: string) => {
   try {
     await prisma.item.delete({
       where: { id },
-    })
-    await supabase.storage
-      .from('items')
-      .remove([idStorageItem])
+    });
+    await supabase.storage.from('items').remove([idStorageItem]);
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
-}
+};
 
-export const getItemById = async (
-  id: number
-): Promise<Item | null> => {
+export const getItemById = async (id: number): Promise<Item | null> => {
   try {
     const item = await prisma.item.findUnique({
       where: { id },
-    })
-    if (!item) return null
+    });
+    if (!item) return null;
 
     const formattedItem: Item = {
       ...item,
       type: item.type as 'lost' | 'found',
       createdAt: item.createdAt.toISOString(),
-    }
+    };
 
-    return formattedItem
+    return formattedItem;
   } catch (error) {
-    console.error(error)
-    return null
+    console.error(error);
+    return null;
   }
-}
+};
 
 // export const getMyItems = async (telegramId: string) => {
 //   try {
