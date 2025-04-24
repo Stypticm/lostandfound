@@ -75,6 +75,7 @@ export const LostFoundForm = ({
 
       toast.success(itemId ? `${dict.itemUpdated}` : `${dict.itemAdded}`);
       router.push(redirectAfterSubmit);
+      router.refresh();
     } catch (error) {
       console.log(error);
       toast.error(`${dict.messageFormError}`);
