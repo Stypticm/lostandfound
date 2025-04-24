@@ -22,6 +22,8 @@
     "nameOfTable": "Название",
     "dateOfTable": "Дата",
     "descriptionOfForm": "Описание",
+    "telegramLink": "Telegram",
+    "noTelegramId": "Telegram ID не найден",
     "city": "Город",
     "image": "Изображение",
     "uploadedImage": "Загруженное изображение",

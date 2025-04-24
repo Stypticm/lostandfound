@@ -22,6 +22,8 @@
     "nameOfTable": "Name",
     "dateOfTable": "Date",
     "descriptionOfForm": "Description",
+    "telegramLink": "Telegram",
+    "noTelegramId": "Telegram ID not found",
     "city": "City",
     "image": "Image",
     "uploadedImage": "Uploaded image",
