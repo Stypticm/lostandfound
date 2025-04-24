@@ -1,5 +1,7 @@
 import { LostFoundForm } from '@components/LostFoundForm'
+import { getTranslations } from 'next-intl/server'
 
-export default function LostPage() {
-  return <LostFoundForm heading="Я потерял" type="lost" />
+export default async function LostPage() {
+  const t = await getTranslations()
+  return <LostFoundForm heading={t('ILost')} type="lost" />
 }
