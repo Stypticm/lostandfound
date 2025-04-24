@@ -16,6 +16,7 @@ import { formSchema, FormValues } from '@/lib/formSchema';
 import { useFormMessages } from '@/lib/hook/useFormMessages';
 
 type Props = {
+  heading: string;
   type: 'lost' | 'found';
   initialValues?: Partial<FormValues>;
   itemId?: number;
@@ -24,6 +25,7 @@ type Props = {
 };
 
 export const LostFoundForm = ({
+  heading,
   type,
   initialValues,
   itemId,
@@ -118,6 +120,7 @@ export const LostFoundForm = ({
 
   return (
     <section className="flex flex-col p-4">
+      <h2 className="text-3xl font-bold text-center p-2">{heading}</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
