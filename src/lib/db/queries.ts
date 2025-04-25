@@ -20,6 +20,7 @@ export const addItem = async (item: Item) => {
 
 export const getLostItems = async () => {
   try {
+    console.log('Fetching lost items...');
     const data = await prisma.item.findMany({
       where: { type: 'lost' },
       select: {
@@ -44,6 +45,7 @@ export const getLostItems = async () => {
 
 export const getFoundItems = async () => {
   try {
+    console.log('Fetching found items...');
     const data = await prisma.item.findMany({
       where: { type: 'found' },
       select: {
