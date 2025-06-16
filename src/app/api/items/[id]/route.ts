@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { prisma } from '../../../../../lib/prisma';
+import { prisma } from '@lib/prisma';
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const id = Number((await params).id);

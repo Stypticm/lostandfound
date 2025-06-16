@@ -1,4 +1,4 @@
-import { prisma } from '../../../lib/prisma';
+import { prisma } from '@lib/prisma';
 import { Item } from '../interfaces';
 import { supabase } from '../supabase';
 
@@ -15,6 +15,7 @@ export const addItem = async (item: Item) => {
     return data;
   } catch (error) {
     console.error(error);
+    throw new Error('Failed to add item');
   }
 };
 
