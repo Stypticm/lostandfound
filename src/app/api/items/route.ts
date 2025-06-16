@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
         'Access-Control-Allow-Origin': '*',
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     let errorMessage = 'Something went wrong';
 
     if (error instanceof Error) {
