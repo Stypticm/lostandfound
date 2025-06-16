@@ -26,3 +26,5 @@ You can easily post lost or found items and browse existing listings.
 This app is hosted on [Vercel](https://vercel.com) and integrated with **Telegram** as a Mini App.
 
 To use the app, just open the [@LostAndFoundAppBot](https://t.me/LostAndFoundAppBot) in Telegram, no installation required.
+
+It works in Telegram, but I'm using free version of Supabase. But you can check it [here](https://lostandfound-eta.vercel.app/en)
