@@ -200,11 +200,16 @@ export const LostFoundForm = ({
             )}
           />
           <footer className="flex gap-2 justify-around items-center">
-            <Button type="submit"
+            <Button
+              type="submit"
               className=" text-2xl p-8"
               disabled={uploading || form.formState.isSubmitting}
             >
-              {uploading || form.formState.isSubmitting ? `${dict.loading}` : itemId ? `${dict.save}` : `${dict.send}`}
+              {uploading || form.formState.isSubmitting
+                ? `${dict.loading}`
+                : itemId
+                  ? `${dict.save}`
+                  : `${dict.send}`}
             </Button>
             <Button type="button" onClick={onReset} className=" text-2xl p-8">
               {`${dict.reset}`}
