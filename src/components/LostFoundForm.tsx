@@ -36,6 +36,7 @@ export const LostFoundForm = ({
   const schema = formSchema(dict);
   const router = useRouter();
   const [uploading, setUploading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof schema>>({
@@ -55,6 +56,7 @@ export const LostFoundForm = ({
   }, [initialValues?.imageUrl]);
 
   const onSubmit = async (values: FormValues) => {
+    setIsSubmitted(true);
     try {
       if (onSubmitOverride) {
         await onSubmitOverride(values);
@@ -80,12 +82,16 @@ export const LostFoundForm = ({
       console.log(error);
       toast.error(`${dict.messageFormError}`);
     }
+    finally {
+      setIsSubmitted(false);
+    }
   };
 
   const onReset = () => {
     form.reset();
     setUploadedImage(initialValues?.imageUrl || null);
     router.push(redirectAfterSubmit);
+    setIsSubmitted(false)
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -200,8 +206,8 @@ export const LostFoundForm = ({
             )}
           />
           <footer className="flex gap-2 justify-around items-center">
-            <Button type="submit" className=" text-2xl p-8" disabled={uploading}>
-              {uploading ? `${dict.loading}` : itemId ? `${dict.save}` : `${dict.send}`}
+            <Button type="submit" className=" text-2xl p-8" disabled={uploading || isSubmitted}>
+              {uploading || isSubmitted ? `${dict.loading}` : itemId ? `${dict.save}` : `${dict.send}`}
             </Button>
             <Button type="button" onClick={onReset} className=" text-2xl p-8">
               {`${dict.reset}`}
