@@ -14,15 +14,14 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (error: any) {
+    let errorMessage = 'Something went wrong';
+
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+
     console.error('API Error:', error);
 
-    return NextResponse.json(
-      {
-        error: error.message || 'Something went wrong',
-      },
-      {
-        status: 500,
-      },
-    );
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
