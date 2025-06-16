@@ -44,16 +44,24 @@ const TableLostItems = ({
             count ? (
               formattedItems.slice(0, count).map((item: DisplayItem) => (
                 <TableRow key={item.id} onClick={() => handleRowClick(item.id as number)}>
-                  <TableCell>{item.title.length > 7 ? `${item.title.slice(0, 7)}...` : item.title}</TableCell>
-                  <TableCell>{item.city.length > 7 ? `${item.city.slice(0,7)}...` : `${item.city}`}</TableCell>
+                  <TableCell>
+                    {item.title.length > 7 ? `${item.title.slice(0, 7)}...` : item.title}
+                  </TableCell>
+                  <TableCell>
+                    {item.city.length > 7 ? `${item.city.slice(0, 7)}...` : `${item.city}`}
+                  </TableCell>
                   <TableCell>{item.createdAt}</TableCell>
                 </TableRow>
               ))
             ) : (
               formattedItems.map((item: DisplayItem) => (
                 <TableRow key={item.id} onClick={() => handleRowClick(item.id as number)}>
-                  <TableCell>{item.title.length > 7 ? `${item.title.slice(0, 7)}...` : item.title}</TableCell>
-                  <TableCell>{item.city.length > 7 ? `${item.city.slice(0,7)}...` : `${item.city}`}</TableCell>
+                  <TableCell>
+                    {item.title.length > 7 ? `${item.title.slice(0, 7)}...` : item.title}
+                  </TableCell>
+                  <TableCell>
+                    {item.city.length > 7 ? `${item.city.slice(0, 7)}...` : `${item.city}`}
+                  </TableCell>
                   <TableCell>{item.createdAt}</TableCell>
                 </TableRow>
               ))
